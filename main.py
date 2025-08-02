@@ -21,7 +21,7 @@ async def transcribe_audio(file: UploadFile = File(...)):
         "content": [
             {"type": "audio", "audio": filepath},
             {"type": "text", "text": "Transcribe this audio"},
-        ]
+        ] 
     }]
 
     input_ids = processor.apply_chat_template(
