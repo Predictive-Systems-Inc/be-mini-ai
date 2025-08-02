@@ -2,6 +2,8 @@ from fastapi import FastAPI, UploadFile, File
 from unsloth import FastVisionModel
 import torch
 import shutil
+import os
+os.environ["TORCHINDUCTOR_CACHE_DIR"] = "/tmp/torchinductor"
 
 app = FastAPI()
 
