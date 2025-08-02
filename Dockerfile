@@ -1,6 +1,7 @@
 FROM pytorch/pytorch:2.1.0-cuda12.1-cudnn8-runtime
 
 # Install build tools, C compiler, ffmpeg
+ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
   gcc build-essential cmake ffmpeg libclang-dev \
   && rm -rf /var/lib/apt/lists/*
