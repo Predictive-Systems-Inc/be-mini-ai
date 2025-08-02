@@ -2,8 +2,6 @@ from fastapi import FastAPI, UploadFile, File
 from unsloth import FastVisionModel
 import torch
 import shutil
-import os
-os.environ["TRITON_CACHE_DIR"] = "/tmp/triton"
 
 app = FastAPI()
 
