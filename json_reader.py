@@ -119,10 +119,12 @@ def build_response_prompt(speaker_name, state):
         # build the prompt
         question_or_message = current_node.get("question") or current_node.get("message")
 
-        prompt = f""" You are a tutor assessing a student's response. Choose the best response from the list of responses based on the criteria. Respond verbatim from the response.
+        prompt = f""" You are a teacher doing an assessment of a student's response. Choose the best response from the list of responses based on the criteria. Check if response answers the question. When student do not know the answer, do not say correct. 
         Question: {question_or_message}
         Criteria: {question_node['criteria']}
         Responses: {response_messages}
+
+        Respond verbatim from the response given above. Do not add any other text.
         """
         return (prompt, response_messages, tags)
     except Exception as e:
