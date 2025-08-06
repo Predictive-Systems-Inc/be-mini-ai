@@ -345,7 +345,7 @@ async def handle_message(client_id: str, message: dict):
                         if (state["accumulated_audio"] and 
                             state["setup_complete"] and 
                             state.get("has_speech", False) and  # Only save if we had speech
-                            silence_duration_ms >= 200):  # 200ms silence threshold
+                            silence_duration_ms >= 500):  # 200ms silence threshold
                             
                             logger.info(f"End of speech detected after {silence_duration_ms:.1f}ms of silence")
                             
