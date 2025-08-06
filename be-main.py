@@ -4,9 +4,9 @@
 # This server provides a simplified WebSocket interface for testing audio file saving
 # without the unsloth model dependencies.
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, UploadFile, File
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
-from unsloth import FastVisionModel
+#from unsloth import FastVisionModel
 
 import os
 import json
@@ -16,7 +16,7 @@ import time
 from typing import Dict, Any
 import uuid
 import asyncio
-from json_reader import get_first_question, build_response_prompt
+from json_reader import get_question, build_response_prompt, find_node_by_tag
 import numpy as np
 import librosa
 import json
@@ -24,6 +24,8 @@ import random
 
 GEMMA_MAX_TOKENS = 50
 GEMMA_TEMPERATURE = 0.0
+
+TEACHER_NAME = "teacher_1"
 
 # =============================================================================
 # CONSTANTS
@@ -53,15 +55,14 @@ if not os.path.exists(AUDIO_CACHE_DIR):
     os.makedirs(AUDIO_CACHE_DIR)
     logger.info(f"Created audio cache directory: {AUDIO_CACHE_DIR}")
 
-TEACHER_NAME = "teacher_2"
 
 # =============================================================================
 # MODEL LOADING
 # =============================================================================
 # Load the vision-language model at startup for audio transcription and text generation
 # This model can handle both audio input (for transcription) and text input (for responses)
-model, processor = FastVisionModel.from_pretrained("unsloth/gemma-3n-e2b-it", load_in_4bit=True)
-model.generation_config.cache_implementation = "static"
+# model, processor = FastVisionModel.from_pretrained("unsloth/gemma-3n-e2b-it", load_in_4bit=True)
+# model.generation_config.cache_implementation = "static"
 
 
 def analyze_audio_volume(audio_data: bytes) -> tuple[float, bool]:
@@ -128,7 +129,15 @@ class ConnectionManager:
             "system_instruction": None,     # Teacher role/system prompt
             "conversation_history": [],      # Chat history for context,
             "silence_start_time": None,     # Track when silence began
+            "question_index": 0,            # Current question index
+            "current_node": None,           # Current conversation node
         }
+
+        # Remove global variable initialization since they're now in state
+        # global question_index
+        # global current_node
+        # question_index = 0
+        # current_node = None
         
         logger.info(f"Client {client_id} connected")
     
@@ -250,7 +259,10 @@ async def generate_response(client_id: str, prompt: str, filepath: str):
         ).to(model.device, dtype=model.dtype)
 
         # Generate transcription
-        outputs = model.generate(**input_ids, max_new_tokens=GEMMA_MAX_TOKENS, do_sample=False, temperature=GEMMA_TEMPERATURE)
+        outputs = model.generate(**input_ids, 
+                                    max_new_tokens=GEMMA_MAX_TOKENS,
+                                    do_sample=False, 
+                                    temperature=GEMMA_TEMPERATURE)
         result = processor.batch_decode(outputs, skip_special_tokens=True)[0]
         result = result.split("model\n")[-1].split("<end_of_turn>")[0].strip()
         
@@ -262,7 +274,7 @@ async def generate_response(client_id: str, prompt: str, filepath: str):
         # if os.path.exists(filepath):
         #     os.remove(filepath)
         #     logger.info(f"Cleaned up WAV file: {filepath}")
-        # Keep WAV file for investigation - no cleanup
+        # Keep WAV file for investigation - no cleanup yet
         logger.info(f"WAV file preserved for investigation: {filepath}")   
         
 async def handle_message(client_id: str, message: dict):
@@ -313,81 +325,85 @@ async def handle_message(client_id: str, message: dict):
                 
                 # Only process audio/pcm chunks, skip everything else
                 if mime_type == "audio/pcm" and data:
-                    try:
-                        # Decode the base64 audio data
-                        audio_bytes = base64.b64decode(data)
+                    # Decode the base64 audio data
+                    audio_bytes = base64.b64decode(data)
+                    
+                    # Analyze volume of this chunk using librosa
+                    volume, is_silent = analyze_audio_volume(audio_bytes)
+                    
+                    if is_silent:
+                        # Track silence duration in milliseconds
+                        if "silence_start_time" not in state or state["silence_start_time"] is None:
+                            state["silence_start_time"] = time.time() * 1000
                         
-                        # Analyze volume of this chunk using librosa
-                        volume, is_silent = analyze_audio_volume(audio_bytes)
+                        # Calculate how long we've been silent
+                        current_time = time.time() * 1000
+                        silence_duration_ms = current_time - state["silence_start_time"]
                         
-                        if is_silent:
-                            # Track silence duration in milliseconds
-                            if "silence_start_time" not in state or state["silence_start_time"] is None:
-                                state["silence_start_time"] = time.time() * 1000
+                        # Only save if we have accumulated audio AND there was actual speech
+                        if (state["accumulated_audio"] and 
+                            state["setup_complete"] and 
+                            state.get("has_speech", False) and  # Only save if we had speech
+                            silence_duration_ms >= 200):  # 200ms silence threshold
                             
-                            # Calculate how long we've been silent
-                            current_time = time.time() * 1000
-                            silence_duration_ms = current_time - state["silence_start_time"]
+                            logger.info(f"End of speech detected after {silence_duration_ms:.1f}ms of silence")
                             
-                            # Only save if we have accumulated audio AND there was actual speech
-                            if (state["accumulated_audio"] and 
-                                state["setup_complete"] and 
-                                state.get("has_speech", False) and  # Only save if we had speech
-                                silence_duration_ms >= 200):  # 200ms silence threshold
-                                
-                                logger.info(f"End of speech detected after {silence_duration_ms:.1f}ms of silence")
-                                
-                                # Save the accumulated audio to file
-                                filepath = await save_audio_chunks(state["accumulated_audio"])
-                                
-                                if filepath:
-                                    logger.info(f"Audio saved successfully: {filepath}")
-                                    # Let's build the prompt for the gemma inference
-                                    prompt, responses = build_response_prompt(TEACHER_NAME, state["current_node"])
-
-                                    # Gemma Inference goes here...
-                                    
-                                    # Read and send the existing voice file to client
-                                    # pick random from responses
-                                    print("before random selection.")
-                                    print("state['current_node']", state["current_node"])
-                                    print("responses", responses)
-                                    random_response = random.choice(responses)
-                                    random_response['question'] = state["current_node"]["question"]
-                                    random_response['criteria'] = state["current_node"]["criteria"]
-                                    state["current_node"] = random_response 
-                                    print("before sending... random_response", random_response)
-                                    voice_response = await send_voice_file_to_client(client_id, random_response["audio link"])
-                                    
-                                    if voice_response:
-                                        # Send the voice file response
-                                        await manager.send_message(client_id, voice_response)
-                                else:
-                                    logger.warning("Failed to save audio file")
-                                        
-                                
-                                # Clear accumulated audio for next turn
-                                state["accumulated_audio"] = []
-                                state["silence_start_time"] = None
-                                state["has_speech"] = False  # Reset speech flag
-                                
-                            else:
-                                # Keep adding to the accumulated audio, including silence
-                                state["accumulated_audio"].append(data)
-                                
-                        else:
-                            # Reset silence tracking when we get non-silent audio
+                            # Save the accumulated audio to file
+                            filepath = await save_audio_chunks(state["accumulated_audio"])
+                                                        # Clear accumulated audio for next turn
+                            state["accumulated_audio"] = []
                             state["silence_start_time"] = None
-                            state["has_speech"] = True  # Mark that we have speech
+                            state["has_speech"] = False  # Reset speech flag
+
                             
-                            # Add non-silent chunks to accumulation
+                            if filepath:
+                                logger.info(f"Audio saved successfully: {filepath}")
+                                # Let's build the prompt for the gemma inference
+                                prompt, response_messages, tags = build_response_prompt(TEACHER_NAME, state)
+                                if not tags:
+                                    # no more responses, move to the next question
+                                    print("no more responses, move to the next question")
+                                    state["question_index"] += 1
+                                    state["current_node"] = None
+                                    print("state['question_index']", state["question_index"])
+                                    # build the prompt for the next question
+                                    await manager.send_message(client_id, await generate_teacher_greeting(client_id, state))
+                                    return
+ 
+                                # Gemma Inference goes here...
+                                # response = await generate_response(client_id, prompt, filepath)
+                                # print("response", response)
+                                
+                                # # Read and send the existing voice file to client
+                                # # pick random from responses
+                                # print("before random selection.")
+                                # print("state['current_node']", state["current_node"])
+                                # print("responses", responses)
+
+                                random_tag = random.choice(tags)
+                                node = find_node_by_tag(random_tag)
+                                state["current_node"] = node  # Update state instead of global
+                                voice_response = await send_voice_file_to_client(client_id, node["audio link"])
+                                
+                                if voice_response:
+                                    # Send the voice file response
+                                    await manager.send_message(client_id, voice_response)
+                            else:
+                                logger.warning("Failed to save audio file")
+                            
+                        else:
+                            # Keep adding to the accumulated audio, including silence
                             state["accumulated_audio"].append(data)
                             
-                    except Exception as e:
-                        logger.error(f"Error processing audio chunk: {e}")
-                        # Still add the chunk if we can't analyze it
+                    else:
+                        # Reset silence tracking when we get non-silent audio
+                        state["silence_start_time"] = None
+                        state["has_speech"] = True  # Mark that we have speech
+                        
+                        # Add non-silent chunks to accumulation
                         state["accumulated_audio"].append(data)
-                        raise e
+                        
+
                         
                 else:
                     logger.warning(f"Skipping non-audio chunk with mime_type: {mime_type}")
@@ -493,13 +509,21 @@ async def save_audio_chunks(audio_chunks: list) -> str:
         logger.error(f"Audio saving failed: {e}")
         return ""
 
-async def generate_teacher_greeting(client_id: str, state: dict ) -> dict:
+async def generate_teacher_greeting(client_id: str, state: dict) -> dict:
     """
-    Generate an initial teacher greeting. We just play the first question.
+    Generate a teacher greeting using the current state.
     """
-    # get the first question
-    question = get_first_question(TEACHER_NAME)
+    # Check if we've run out of questions
+    question = get_question(TEACHER_NAME, state["question_index"])
+    if question is None:
+        # No more questions available
+        return {
+            "type": "text",
+            "content": "Great job! We've completed all the questions. Thank you for participating!"
+        }
+    
     state["current_node"] = question
+    print("question", question)
     return await send_voice_file_to_client(client_id, question["audio"])
 
 async def send_voice_file_to_client(client_id: str, voice_filepath: str) -> dict:

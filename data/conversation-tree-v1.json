@@ -3,36 +3,40 @@
     {
       "speaker": "question",
       "message": "Within the topic of projectile motion, how would you describe a projectile?",
+      "criteria": [
+        "Answer must define projectile and projectile motion",
+        "Answer must mention gravity as the sole influence on the object."
+      ],
       "children": [
         {
           "speaker": "teacher_1",
           "message": "Good morning! Let's explore this together. In the context of projectile motion, how do you define a projectile?",
           "tag": "teacher_1_question_1_0001",
-          "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/teacher_1_question_1_0001.wav?download=true",
+          "audio link": "voice/teacher_1_question_1_0001.wav",
           "responses": [
             {
               "speaker": "student_1",
               "message": "Is it just anything that moves through the air?",
               "tag": "student_1_question_1_0001",
-              "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/student_1_question_1_0001.wav?download=true",
+              "audio link": "voice/student_1_question_1_0001.wav",
               "responses": [
                 {
                   "speaker": "teacher_1",
                   "message": "That's too broad. Think about what makes projectile motion special - what forces are involved?",
                   "tag": "teacher_1_followup_1_0001",
-                  "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/teacher_1_followup_1_0001.wav?download=true",
+                  "audio link": "voice/teacher_1_followup_1_0001.wav",
                   "responses": [
                     {
                       "speaker": "student_1",
                       "message": "Oh, so it's something that only has gravity acting on it after it's launched?",
                       "tag": "student_1_correction_1_0001",
-                      "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/student_1_correction_1_0001.wav?download=true",
+                      "audio link": "voice/student_1_correction_1_0001.wav",
                       "responses": [
                         {
                           "speaker": "teacher_1",
                           "message": "Exactly! Now you're getting it. Let's move to the next concept.",
                           "tag": "teacher_1_approval_1_0001",
-                          "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/teacher_1_approval_1_0001.wav?download=true"
+                          "audio link": "voice/teacher_1_approval_1_0001.wav"
                         }
                       ]
                     },
@@ -40,13 +44,13 @@
                       "speaker": "student_2",
                       "message": "Wait, I want to add something - it also follows a curved path, right?",
                       "tag": "student_2_interjection_1_0001",
-                      "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/student_2_interjection_1_0001.wav?download=true",
+                      "audio link": "voice/student_2_interjection_1_0001.wav",
                       "responses": [
                         {
                           "speaker": "teacher_1",
                           "message": "Great observation! Yes, the curved path is called a parabola. Both of you are contributing well.",
                           "tag": "teacher_1_multiple_approval_1_0001",
-                          "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/teacher_1_multiple_approval_1_0001.wav?download=true"
+                          "audio link": "voice/teacher_1_multiple_approval_1_0001.wav"
                         }
                       ]
                     }
@@ -58,25 +62,25 @@
               "speaker": "student_2",
               "message": "Hmm, a projectile... I think it's like, anything that gets launched or thrown and then just flies through the air.",
               "tag": "student_2_question_1_0001",
-              "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/student_2_question_1_0001.wav?download=true",
+              "audio link": "voice/student_2_question_1_0001.wav",
               "responses": [
                 {
                   "speaker": "teacher_1",
                   "message": "That's a good start, but it's not quite complete. Remember that in physics, a specific condition applies to the forces acting on the object once it's launched.",
                   "tag": "teacher_1_correction_2_0001",
-                  "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/teacher_1_correction_2_0001.wav?download=true",
+                  "audio link": "voice/teacher_1_correction_2_0001.wav",
                   "responses": [
                     {
                       "speaker": "student_2",
                       "message": "Oh, I see! So it's something that gets launched, and then once it's in the air, gravity is the only force acting on it.",
                       "tag": "student_2_correction_1_0001",
-                      "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/student_2_correction_1_0001.wav?download=true",
+                      "audio link": "voice/student_2_correction_1_0001.wav",
                       "responses": [
                         {
                           "speaker": "teacher_1",
                           "message": "Perfect! You've got it now.",
                           "tag": "teacher_1_approval_2_0001",
-                          "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/teacher_1_approval_2_0001.wav?download=true"
+                          "audio link": "voice/teacher_1_approval_2_0001.wav"
                         }
                       ]
                     },
@@ -84,13 +88,13 @@
                       "speaker": "student_3",
                       "message": "Actually, I think I know this one - it's when only gravity acts on the object, ignoring air resistance.",
                       "tag": "student_3_interjection_1_0001",
-                      "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/student_3_interjection_1_0001.wav?download=true",
+                      "audio link": "voice/student_3_interjection_1_0001.wav",
                       "responses": [
                         {
                           "speaker": "teacher_1",
                           "message": "Excellent! Student 3, you nailed the key point about ignoring air resistance in our simplified model.",
                           "tag": "teacher_1_approval_3_0001",
-                          "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/teacher_1_approval_3_0001.wav?download=true"
+                          "audio link": "voice/teacher_1_approval_3_0001.wav"
                         }
                       ]
                     }
@@ -102,25 +106,25 @@
               "speaker": "student_3",
               "message": "A projectile is an object that has been launched or thrown into the air, and once it's moving, the only force acting on it is gravity, if we don't count air resistance. It follows a curved path.",
               "tag": "student_3_question_1_0001",
-              "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/student_3_question_1_0001.wav?download=true",
+              "audio link": "voice/student_3_question_1_0001.wav",
               "responses": [
                 {
                   "speaker": "teacher_1",
                   "message": "Outstanding! That's a complete and accurate definition. You mentioned all the key components.",
                   "tag": "teacher_1_praise_3_0001",
-                  "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/teacher_1_praise_3_0001.wav?download=true",
+                  "audio link": "voice/teacher_1_praise_3_0001.wav",
                   "responses": [
                     {
                       "speaker": "student_4",
                       "message": "Wait, what about things like rockets that have their own propulsion? Are those projectiles?",
                       "tag": "student_4_challenge_1_0001",
-                      "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/student_4_challenge_1_0001.wav?download=true",
+                      "audio link": "voice/student_4_challenge_1_0001.wav",
                       "responses": [
                         {
                           "speaker": "teacher_1",
                           "message": "Great question! Rockets with active propulsion are NOT projectiles because additional forces besides gravity are acting on them.",
                           "tag": "teacher_1_clarification_1_0001",
-                          "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/teacher_1_clarification_1_0001.wav?download=true"
+                          "audio link": "voice/teacher_1_clarification_1_0001.wav"
                         }
                       ]
                     }
@@ -132,25 +136,25 @@
               "speaker": "student_5",
               "message": "Um, I'm not really sure. Could you give us a hint?",
               "tag": "student_5_question_1_0001",
-              "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/student_5_question_1_0001.wav?download=true",
+              "audio link": "voice/student_5_question_1_0001.wav",
               "responses": [
                 {
                   "speaker": "teacher_1",
                   "message": "Of course! Think about a ball that you throw. Once it leaves your hand, what forces are acting on it?",
                   "tag": "teacher_1_hint_5_0001",
-                  "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/teacher_1_hint_5_0001.wav?download=true",
+                  "audio link": "voice/teacher_1_hint_5_0001.wav",
                   "responses": [
                     {
                       "speaker": "student_5",
                       "message": "Just gravity pulling it down?",
                       "tag": "student_5_tentative_1_0001",
-                      "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/student_5_tentative_1_0001.wav?download=true",
+                      "audio link": "voice/student_5_tentative_1_0001.wav",
                       "responses": [
                         {
                           "speaker": "teacher_1",
                           "message": "Exactly! So a projectile is any object where gravity is the only force acting on it after launch.",
                           "tag": "teacher_1_confirmation_5_0001",
-                          "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/teacher_1_confirmation_5_0001.wav?download=true"
+                          "audio link": "voice/teacher_1_confirmation_5_0001.wav"
                         }
                       ]
                     },
@@ -158,13 +162,13 @@
                       "speaker": "student_6",
                       "message": "I was confused too, but now I get it - it's like when you throw a basketball and it arcs through the air.",
                       "tag": "student_6_understanding_1_0001",
-                      "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/student_6_understanding_1_0001.wav?download=true",
+                      "audio link": "voice/student_6_understanding_1_0001.wav",
                       "responses": [
                         {
                           "speaker": "teacher_1",
                           "message": "Perfect example! The basketball follows projectile motion from the moment it leaves your hands.",
                           "tag": "teacher_1_example_approval_1_0001",
-                          "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/teacher_1_example_approval_1_0001.wav?download=true"
+                          "audio link": "voice/teacher_1_example_approval_1_0001.wav"
                         }
                       ]
                     }
@@ -176,25 +180,25 @@
               "speaker": "student_6",
               "message": "I don't know.",
               "tag": "student_6_question_1_0001",
-              "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/student_6_question_1_0001.wav?download=true",
+              "audio link": "voice/student_6_question_1_0001.wav",
               "responses": [
                 {
                   "speaker": "teacher_1",
                   "message": "That's okay! Remember that a projectile is an object upon which the only force acting is gravity.",
                   "tag": "teacher_1_explanation_6_0001",
-                  "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/teacher_1_explanation_6_0001.wav?download=true",
+                  "audio link": "voice/teacher_1_explanation_6_0001.wav",
                   "responses": [
                     {
                       "speaker": "student_6",
                       "message": "It's an object where gravity is the only force acting on it.",
                       "tag": "student_6_repeat_1_0001",
-                      "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/student_6_repeat_1_0001.wav?download=true",
+                      "audio link": "voice/student_6_repeat_1_0001.wav",
                       "responses": [
                         {
                           "speaker": "teacher_1",
                           "message": "Good job! You've got the key concept now.",
                           "tag": "teacher_1_encouragement_6_0001",
-                          "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/teacher_1_encouragement_6_0001.wav?download=true"
+                          "audio link": "voice/teacher_1_encouragement_6_0001.wav"
                         }
                       ]
                     },
@@ -202,19 +206,19 @@
                       "speaker": "student_1",
                       "message": "Can I help? It's like a ball you throw - once it's in the air, only gravity pulls on it.",
                       "tag": "student_1_help_6_0001",
-                      "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/student_1_help_6_0001.wav?download=true",
+                      "audio link": "voice/student_1_help_6_0001.wav",
                       "responses": [
                         {
                           "speaker": "student_6",
                           "message": "Oh, that makes sense! Thanks for the example.",
                           "tag": "student_6_gratitude_1_0001",
-                          "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/student_6_gratitude_1_0001.wav?download=true",
+                          "audio link": "voice/student_6_gratitude_1_0001.wav",
                           "responses": [
                             {
                               "speaker": "teacher_1",
                               "message": "I love seeing students help each other! Great teamwork.",
                               "tag": "teacher_1_teamwork_praise_0001",
-                              "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/teacher_1_teamwork_praise_0001.wav?download=true"
+                              "audio link": "voice/teacher_1_teamwork_praise_0001.wav"
                             }
                           ]
                         }
@@ -236,31 +240,31 @@
           "speaker": "teacher_1",
           "message": "Great! Now let's dive deeper. What are the two components of projectile motion?",
           "tag": "teacher_1_question_2_0001",
-          "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/teacher_1_question_2_0001.wav?download=true",
+          "audio link": "voice/teacher_1_question_2_0001.wav",
           "responses": [
             {
               "speaker": "student_2",
               "message": "Horizontal and vertical motion?",
               "tag": "student_2_question_2_0001",
-              "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/student_2_question_2_0001.wav?download=true",
+              "audio link": "voice/student_2_question_2_0001.wav",
               "responses": [
                 {
                   "speaker": "teacher_1",
                   "message": "Exactly! And what's special about these two components?",
                   "tag": "teacher_1_followup_2_0001",
-                  "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/teacher_1_followup_2_0001.wav?download=true",
+                  "audio link": "voice/teacher_1_followup_2_0001.wav",
                   "responses": [
                     {
                       "speaker": "student_3",
                       "message": "They're independent of each other - the horizontal motion doesn't affect the vertical motion and vice versa.",
                       "tag": "student_3_question_2_0001",
-                      "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/student_3_question_2_0001.wav?download=true",
+                      "audio link": "voice/student_3_question_2_0001.wav",
                       "responses": [
                         {
                           "speaker": "teacher_1",
                           "message": "Perfect! That's the key insight of projectile motion.",
                           "tag": "teacher_1_approval_2_0002",
-                          "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/teacher_1_approval_2_0002.wav?download=true"
+                          "audio link": "voice/teacher_1_approval_2_0002.wav"
                         }
                       ]
                     },
@@ -268,13 +272,13 @@
                       "speaker": "student_4",
                       "message": "Wait, is the horizontal motion constant while the vertical motion accelerates?",
                       "tag": "student_4_question_2_0001",
-                      "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/student_4_question_2_0001.wav?download=true",
+                      "audio link": "voice/student_4_question_2_0001.wav",
                       "responses": [
                         {
                           "speaker": "teacher_1",
                           "message": "Brilliant observation! Yes, horizontal velocity stays constant while vertical motion accelerates due to gravity.",
                           "tag": "teacher_1_detailed_approval_2_0001",
-                          "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/teacher_1_detailed_approval_2_0001.wav?download=true"
+                          "audio link": "voice/teacher_1_detailed_approval_2_0001.wav"
                         }
                       ]
                     }
@@ -286,25 +290,25 @@
               "speaker": "student_1",
               "message": "Is it up and down, and left and right?",
               "tag": "student_1_question_2_0001",
-              "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/student_1_question_2_0001.wav?download=true",
+              "audio link": "voice/student_1_question_2_0001.wav",
               "responses": [
                 {
                   "speaker": "teacher_1",
                   "message": "You're on the right track! We call them horizontal and vertical components. Can you be more specific?",
                   "tag": "teacher_1_encouragement_2_0001",
-                  "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/teacher_1_encouragement_2_0001.wav?download=true",
+                  "audio link": "voice/teacher_1_encouragement_2_0001.wav",
                   "responses": [
                     {
                       "speaker": "student_5",
                       "message": "The horizontal is the motion along the ground, and vertical is the motion up and down against gravity?",
                       "tag": "student_5_question_2_0001",
-                      "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/student_5_question_2_0001.wav?download=true",
+                      "audio link": "voice/student_5_question_2_0001.wav",
                       "responses": [
                         {
                           "speaker": "teacher_1",
                           "message": "Excellent! You've described both components perfectly.",
                           "tag": "teacher_1_praise_5_0001",
-                          "audio link": "https://huggingface.co/datasets/itsybitsci/audio/resolve/main/teacher_1_praise_5_0001.wav?download=true"
+                          "audio link": "voice/teacher_1_praise_5_0001.wav"
                         }
                       ]
                     }
