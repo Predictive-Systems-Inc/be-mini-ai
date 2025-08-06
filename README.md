@@ -18,7 +18,8 @@ To setup runpod server (5090):
   python -m ipykernel install --user --name=uv_env --display-name "Unsloth (uv)"
 4. You can now restart kernel and choose this new environment
 
-Connect to runpod - ssh ymhhvwsjp7v90d-64410b91@ssh.runpod.io -i ~/.ssh/id_ed25519
+Connect to runpod - 
+ssh ymhhvwsjp7v90d-64410b91@ssh.runpod.io -i ~/.ssh/id_ed25519
 
 uv pip install timm librosa
 cd workspace
@@ -27,4 +28,5 @@ source .venv/bin/activate
 apt install vim 
 
 cd uvicorn
-uvicorn ws-main-2:app --host 0.0.0.0 --port 8000
+
+uvicorn be-main:app --host 0.0.0.0 --port 8080
