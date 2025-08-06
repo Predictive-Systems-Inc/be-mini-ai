@@ -7,6 +7,7 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from unsloth import FastVisionModel
+from transformers import AutoProcessor, AutoModelForImageTextToText
 
 import os
 import json
@@ -24,7 +25,7 @@ import random
 
 GEMMA_MAX_TOKENS = 50
 GEMMA_TEMPERATURE = 0.0
-
+GEMMA_MODEL_ID = "unsloth/gemma-3n-e2b-it"
 TEACHER_NAME = "teacher_1"
 
 # =============================================================================
@@ -61,8 +62,13 @@ if not os.path.exists(AUDIO_CACHE_DIR):
 # =============================================================================
 # Load the vision-language model at startup for audio transcription and text generation
 # This model can handle both audio input (for transcription) and text input (for responses)
-model, processor = FastVisionModel.from_pretrained("unsloth/gemma-3n-e2b-it", load_in_4bit=True)
-model.generation_config.cache_implementation = "static"
+
+# model, processor = FastVisionModel.from_pretrained("unsloth/gemma-3n-e2b-it", load_in_4bit=True)
+# model.generation_config.cache_implementation = "static"
+
+processor = AutoProcessor.from_pretrained(GEMMA_MODEL_ID, device_map="auto")
+model = AutoModelForImageTextToText.from_pretrained(
+            GEMMA_MODEL_ID, torch_dtype="auto", device_map="auto")
 
 
 def analyze_audio_volume(audio_data: bytes) -> tuple[float, bool]:
@@ -240,15 +246,10 @@ async def generate_response(client_id: str, prompt: str, filepath: str):
         # Use the same transcription logic as the HTTP endpoint
         messages = [
             {
-                "role": "user",
-                "content": [
-                    {"type": "text", "text": prompt},
-                ]
-            },
-            {
             "role": "user",
             "content": [
                 {"type": "audio", "audio": filepath},
+                {"type": "text", "text": prompt},
             ] 
         }]
 
