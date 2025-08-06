@@ -24,9 +24,10 @@ import json
 import random
 
 GEMMA_MAX_TOKENS = 50
-GEMMA_TEMPERATURE = 0.0
-GEMMA_MODEL_ID = "unsloth/gemma-3n-e2b-it"
-TEACHER_NAME = "teacher_1"
+GEMMA_TEMPERATURE = 0.1
+#GEMMA_MODEL_ID = "unsloth/gemma-3n-e2b-it"
+GEMMA_MODEL_ID = "google/gemma-3n-E4B-it"
+GEMMA_TEACHER_NAME = "teacher_1"
 
 # =============================================================================
 # CONSTANTS
