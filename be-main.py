@@ -240,42 +240,98 @@ async def gemini_websocket(websocket: WebSocket):
 # MESSAGE HANDLING
 # =============================================================================
 
+# async def generate_response(client_id: str, prompt: str, filepath: str):
+#     """
+#     Generate a response using the gemma model.
+#     """
+#     try:
+#         # Use the same transcription logic as the HTTP endpoint
+#         messages = [
+#             {
+#             "role": "user",
+#             "content": [
+#                 {"type": "audio", "audio": filepath},
+#                 {"type": "text", "text": prompt},
+#             ] 
+#         }]
+
+#         # Process with the model
+#         input_ids = processor.apply_chat_template(
+#             messages, add_generation_prompt=True,
+#             tokenize=True, return_dict=True, return_tensors="pt"
+#         ).to(model.device, dtype=model.dtype)
+
+#         # Generate transcription
+#         outputs = model.generate(**input_ids, 
+#                                     max_new_tokens=GEMMA_MAX_TOKENS,
+#                                     do_sample=False, 
+#                                     temperature=GEMMA_TEMPERATURE)
+#         result = processor.batch_decode(outputs, skip_special_tokens=True)[0]
+#         result = result.split("model\n")[-1].split("<end_of_turn>")[0].strip()
+        
+#         logger.info(f"Raw transcription result: '{result}'")
+#         return result
+        
+#     finally:
+#         # Clean up WAV file
+#         if os.path.exists(filepath):
+#             os.remove(filepath)
+
 async def generate_response(client_id: str, prompt: str, filepath: str):
     """
-    Generate a response using the gemma model.
+    Stream a response using the Gemma3n model with audio input.
     """
     try:
-        # Use the same transcription logic as the HTTP endpoint
+        # Load and process audio
+        audio_inputs = processor(audio=filepath, return_tensors="pt")
+        audio_features = model.get_audio_embeddings(audio_inputs.input_values)
+
+        # Get placeholder mask for audio
+        placeholder_mask = model.get_placeholder_mask(audio_features=audio_features)
+
+        # Prepare chat messages
         messages = [
             {
-            "role": "user",
-            "content": [
-                {"type": "audio", "audio": filepath},
-                {"type": "text", "text": prompt},
-            ] 
-        }]
+                "role": "user",
+                "content": [
+                    {"type": "audio", "audio": filepath},
+                    {"type": "text", "text": prompt},
+                ]
+            }
+        ]
 
-        # Process with the model
+        # Tokenize input
         input_ids = processor.apply_chat_template(
-            messages, add_generation_prompt=True,
-            tokenize=True, return_dict=True, return_tensors="pt"
+            messages,
+            add_generation_prompt=True,
+            tokenize=True,
+            return_dict=True,
+            return_tensors="pt"
         ).to(model.device, dtype=model.dtype)
 
-        # Generate transcription
-        outputs = model.generate(**input_ids, 
-                                    max_new_tokens=GEMMA_MAX_TOKENS,
-                                    do_sample=False, 
-                                    temperature=GEMMA_TEMPERATURE)
-        result = processor.batch_decode(outputs, skip_special_tokens=True)[0]
+        # Stream generate
+        stream = model.generate_stream(
+            input_ids=input_ids['input_ids'],
+            attention_mask=input_ids['attention_mask'],
+            audio_features=audio_features,
+            placeholder_mask=placeholder_mask,
+            max_new_tokens=GEMMA_MAX_TOKENS,
+            do_sample=False,
+            temperature=GEMMA_TEMPERATURE
+        )
+
+        result = ""
+        async for token in stream:
+            result += processor.decode(token, skip_special_tokens=True)
+
         result = result.split("model\n")[-1].split("<end_of_turn>")[0].strip()
-        
         logger.info(f"Raw transcription result: '{result}'")
         return result
-        
+
     finally:
-        # Clean up WAV file
         if os.path.exists(filepath):
             os.remove(filepath)
+
         
 async def handle_message(client_id: str, message: dict):
     """
