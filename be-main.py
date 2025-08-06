@@ -22,6 +22,7 @@ import numpy as np
 import librosa
 import json
 import random
+from rapidfuzz import fuzz, process
 
 GEMMA_MAX_TOKENS = 50
 GEMMA_TEMPERATURE = 0.1
@@ -429,9 +430,17 @@ async def handle_message(client_id: str, message: dict):
                                 # Gemma Inference goes here...
                                 response = await generate_response(client_id, prompt, filepath)
                                 print("response", response)
-                                # find the index of the response in response_messages
-                                index = response_messages.index(response)
-                                print("index of response", index)
+
+                                # Find the best match using rapidfuzz
+                                best_match = process.extractOne(response, response_messages)
+                                if best_match:
+                                    closest_response, confidence = best_match
+                                    index = response_messages.index(closest_response)
+                                    print(f"Found match: '{closest_response}' at index {index} with confidence {confidence}%")
+                                else:
+                                    index = 0  # Default to first response
+                                    print("No match found, using default index 0")
+
                                 tag = tags[index]
                                 node = find_node_by_tag(tag)
                                 
