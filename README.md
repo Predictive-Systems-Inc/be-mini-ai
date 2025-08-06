@@ -9,10 +9,22 @@ license: apache-2.0
 short_description: better-ed mini
 ---
 
-Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
+To setup runpod server (5090):
+1. Follow unsloth tutorial, https://docs.unsloth.ai/basics/training-llms-with-blackwell-rtx-50-series-and-unsloth
+2. Update transformer to "transformers>=4.53.0"
+3. Install kernel on jupyter notebook:
+  pip install ipywidgets==8.1.1
+  pip install ipykernel ipython
+  python -m ipykernel install --user --name=uv_env --display-name "Unsloth (uv)"
+4. You can now restart kernel and choose this new environment
 
+Connect to runpod - ssh ymhhvwsjp7v90d-64410b91@ssh.runpod.io -i ~/.ssh/id_ed25519
 
-curl -X POST https://allanctan-ai.hf.space/be-mini-ai/transcribe \
-  -F "file=@voice\a_projectil_is.wav"
+uv pip install timm librosa
+cd workspace
+source .venv/bin/activate
 
-  allanctan-ai/be-mini-ai
+apt install vim 
+
+cd uvicorn
+uvicorn ws-main-2:app --host 0.0.0.0 --port 8000

@@ -1,0 +1,13 @@
+[project]
+name = "be-mini-ai"
+version = "0.1.0"
+description = "Better-ed mini AI server"
+requires-python = ">=3.8"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "torch",
+    "timm",
+    "python-multipart",
+    "librosa",
+]
