@@ -25,8 +25,8 @@ import random
 
 GEMMA_MAX_TOKENS = 50
 GEMMA_TEMPERATURE = 0.1
-#GEMMA_MODEL_ID = "unsloth/gemma-3n-e2b-it"
-GEMMA_MODEL_ID = "google/gemma-3n-E4B-it"
+GEMMA_MODEL_ID = "unsloth/gemma-3n-e2b-it"
+# GEMMA_MODEL_ID = "google/gemma-3n-E4B-it"
 
 TEACHER_NAME = "teacher_1"
 
@@ -65,12 +65,12 @@ if not os.path.exists(AUDIO_CACHE_DIR):
 # Load the vision-language model at startup for audio transcription and text generation
 # This model can handle both audio input (for transcription) and text input (for responses)
 
-# model, processor = FastVisionModel.from_pretrained("unsloth/gemma-3n-e2b-it", load_in_4bit=True)
-# model.generation_config.cache_implementation = "static"
+model, processor = FastVisionModel.from_pretrained(GEMMA_MODEL_ID, load_in_4bit=True)
+model.generation_config.cache_implementation = "static"
 
-processor = AutoProcessor.from_pretrained(GEMMA_MODEL_ID, device_map="auto")
-model = AutoModelForImageTextToText.from_pretrained(
-            GEMMA_MODEL_ID, torch_dtype="auto", device_map="auto")
+# processor = AutoProcessor.from_pretrained(GEMMA_MODEL_ID, device_map="auto")
+# model = AutoModelForImageTextToText.from_pretrained(
+#             GEMMA_MODEL_ID, torch_dtype="auto", device_map="auto")
 
 
 def analyze_audio_volume(audio_data: bytes) -> tuple[float, bool]:
