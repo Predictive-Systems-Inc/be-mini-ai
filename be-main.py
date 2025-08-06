@@ -6,7 +6,7 @@
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
-#from unsloth import FastVisionModel
+from unsloth import FastVisionModel
 
 import os
 import json
@@ -61,8 +61,8 @@ if not os.path.exists(AUDIO_CACHE_DIR):
 # =============================================================================
 # Load the vision-language model at startup for audio transcription and text generation
 # This model can handle both audio input (for transcription) and text input (for responses)
-# model, processor = FastVisionModel.from_pretrained("unsloth/gemma-3n-e2b-it", load_in_4bit=True)
-# model.generation_config.cache_implementation = "static"
+model, processor = FastVisionModel.from_pretrained("unsloth/gemma-3n-e2b-it", load_in_4bit=True)
+model.generation_config.cache_implementation = "static"
 
 
 def analyze_audio_volume(audio_data: bytes) -> tuple[float, bool]:
@@ -271,11 +271,8 @@ async def generate_response(client_id: str, prompt: str, filepath: str):
         
     finally:
         # Clean up WAV file
-        # if os.path.exists(filepath):
-        #     os.remove(filepath)
-        #     logger.info(f"Cleaned up WAV file: {filepath}")
-        # Keep WAV file for investigation - no cleanup yet
-        logger.info(f"WAV file preserved for investigation: {filepath}")   
+        if os.path.exists(filepath):
+            os.remove(filepath)
         
 async def handle_message(client_id: str, message: dict):
     """
@@ -371,17 +368,21 @@ async def handle_message(client_id: str, message: dict):
                                     return
  
                                 # Gemma Inference goes here...
-                                # response = await generate_response(client_id, prompt, filepath)
-                                # print("response", response)
+                                response = await generate_response(client_id, prompt, filepath)
+                                print("response", response)
+                                # find the index of the response in response_messages
+                                index = response_messages.index(response)
+                                print("index of response", index)
+                                tag = tags[index]
+                                node = find_node_by_tag(tag)
                                 
                                 # # Read and send the existing voice file to client
                                 # # pick random from responses
                                 # print("before random selection.")
                                 # print("state['current_node']", state["current_node"])
                                 # print("responses", responses)
-
-                                random_tag = random.choice(tags)
-                                node = find_node_by_tag(random_tag)
+                                # random_tag = random.choice(tags)
+                                # node = find_node_by_tag(random_tag)
                                 state["current_node"] = node  # Update state instead of global
                                 voice_response = await send_voice_file_to_client(client_id, node["audio link"])
                                 

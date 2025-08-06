@@ -22,7 +22,7 @@ Connect to runpod -
 ssh ymhhvwsjp7v90d-64410b91@ssh.runpod.io -i ~/.ssh/id_ed25519
 
 uv pip install timm librosa
-cd workspace
+cd workspace/unsloth-blackwell
 source .venv/bin/activate
 
 apt install vim 
@@ -30,3 +30,6 @@ apt install vim
 cd uvicorn
 
 uvicorn be-main:app --host 0.0.0.0 --port 8080
+
+To kill runpod uvicorn:
+lsof -ti:8080 | xargs kill -9
